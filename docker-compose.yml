@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"   # Expone el puerto 8080 para acceder a la aplicación
+      - "8082:8080"   # Expone el puerto 8080 para acceder a la aplicación
     depends_on:
       - db
 
