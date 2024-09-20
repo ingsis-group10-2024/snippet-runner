@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class SnippetLanguageApplication
 
 fun main(args: Array<String>) {
-	runApplication<SnippetLanguageApplication>(*args)
+    runApplication<SnippetLanguageApplication>(*args)
 }
