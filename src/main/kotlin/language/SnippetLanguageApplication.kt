@@ -1,4 +1,4 @@
-package ingsis.language
+package language
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
