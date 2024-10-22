@@ -1,34 +1,32 @@
 package language.service
 
+import implementation.Formatter
 import language.model.dto.ExecutionResponse
 import language.model.dto.FormatResponse
 import language.model.dto.ValidationResponse
+import language.service.common.FormatService
+import language.service.common.ParserService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class LanguageService(
-    private val parserService: ParserService,
+    @Autowired private val parserService: ParserService,
+    @Autowired private val formatterService: FormatService,
 ) {
-    fun validateSnippet(
-        content: String,
-        version: String,
-    ): ValidationResponse = parserService.validateSnippet(content, version)
-
-    fun executeSnippet(
-        content: String,
-        version: String,
-    ): ExecutionResponse {
-        // Lógica de ejecución del snippet
-        val output = "Resultado de la ejecución" // Placeholder
-        return ExecutionResponse(output, true)
+    fun executeSnippet(content: String, version: String): ExecutionResponse {
+        //TODO METER LA LOGICA DE EJECUTAR UN SNIPPET
+        return ExecutionResponse("Success", true)
     }
 
-    fun formatSnippet(
-        content: String,
-        version: String,
-    ): FormatResponse {
-        // Lógica de formateo del snippet según las reglas del lenguaje y versión
-        val formattedContent = content // Este es un ejemplo simple
-        return FormatResponse(formattedContent)
+    fun lintSnippet(content: String, version: String): ValidationResponse {
+        val validationResponse = parserService.validateSnippet(content, version)
+        return validationResponse
+    }
+
+    fun formatSnippet(content: String, version: String): FormatResponse{
+        val astNodes = parserService.parse(content, version)
+        val formatterResponse = formatterService.format(astNodes)
+        return formatterResponse
     }
 }
