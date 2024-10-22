@@ -3,9 +3,7 @@ package common
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import config.ConfigLoader
 import config.VerificationConfig
-import org.springframework.stereotype.Component
 
-@Component
 class DefaultConfigLoader : ConfigLoader {
     private val objectMapper = jacksonObjectMapper()
 

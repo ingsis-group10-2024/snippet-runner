@@ -29,7 +29,27 @@ class LanguageController(
             lintResult = lintResult,
             formatResult = formatResult
         )
-
         return ResponseEntity.ok(response)
+    }
+
+    @PostMapping("/execute")
+    fun executeSnippet(@RequestBody snippetRequest: SnippetRequest): ResponseEntity<ExecutionResponse> {
+        val content = snippetRequest.content
+        val executeResult = languageService.executeSnippet(content, version = snippetRequest.languageVersion)
+        return ResponseEntity.ok(executeResult)
+    }
+
+    @PostMapping("/lint")
+    fun lintSnippet(@RequestBody snippetRequest: SnippetRequest): ResponseEntity<ValidationResponse> {
+        val content = snippetRequest.content
+        val lintResult = languageService.lintSnippet(content, version = snippetRequest.languageVersion)
+        return ResponseEntity.ok(lintResult)
+    }
+
+    @PostMapping("/format")
+    fun formatSnippet(@RequestBody snippetRequest: SnippetRequest): ResponseEntity<FormatResponse> {
+        val content = snippetRequest.content
+        val formatResult = languageService.formatSnippet(content, version = snippetRequest.languageVersion)
+        return ResponseEntity.ok(formatResult)
     }
 }

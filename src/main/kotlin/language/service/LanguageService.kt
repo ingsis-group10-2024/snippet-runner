@@ -1,10 +1,10 @@
 package language.service
 
-import implementation.Formatter
 import language.model.dto.ExecutionResponse
 import language.model.dto.FormatResponse
 import language.model.dto.ValidationResponse
 import language.service.common.FormatService
+import language.service.common.InterpreterService
 import language.service.common.ParserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -13,10 +13,12 @@ import org.springframework.stereotype.Service
 class LanguageService(
     @Autowired private val parserService: ParserService,
     @Autowired private val formatterService: FormatService,
+    @Autowired private val interpreterService: InterpreterService
 ) {
     fun executeSnippet(content: String, version: String): ExecutionResponse {
-        //TODO METER LA LOGICA DE EJECUTAR UN SNIPPET
-        return ExecutionResponse("Success", true)
+        val astNodes = parserService.parse(content, version)
+        val executionResponse = interpreterService.execute(astNodes, version)
+        return executionResponse
     }
 
     fun lintSnippet(content: String, version: String): ValidationResponse {

@@ -2,7 +2,8 @@ package language.service.common
 
 import ast.ASTNode
 import common.DefaultConfigLoader
-import common.LexerConfig
+import common.DefaultLexerConfig
+import language.exception.InvalidSnippetException
 import language.model.dto.ValidationResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -11,10 +12,10 @@ import sca.StaticCodeAnalyzer
 import token.Token
 
 @Service
-class ParserService(
-    @Autowired private val configLoader: DefaultConfigLoader,
-    @Autowired private val lexerVersionController: LexerConfig,
-)  {
+class ParserService{
+    private val configLoader = DefaultConfigLoader()
+    private val lexerVersionController = DefaultLexerConfig()
+
     fun validateSnippet(
         content: String,
         version: String,
@@ -24,9 +25,15 @@ class ParserService(
 
         val analyzer = StaticCodeAnalyzer(configLoader)
         val errors = analyzer.analyze(astNodes)
-        val isValid = errors.isEmpty()
-        val response = ValidationResponse(isValid, content, errors)
-        return response
+
+        if (errors.isNotEmpty()) {
+            // Extraer los mensajes de error
+            val errorMessages = errors.map { it.message } // Usar directamente el campo message
+            throw InvalidSnippetException(errorMessages) // Lanza la excepción con los mensajes
+        }
+
+
+        return ValidationResponse(true, content, emptyList())
     }
 
     fun parse(content: String, version: String): List<ASTNode> {
