@@ -9,9 +9,11 @@ import reader.ConsoleInputReader
 import variable.VariableMap
 
 @Service
-class InterpreterService{
-
-    fun execute(astNodes:List<ASTNode>, version: String): ExecutionResponse {
+class InterpreterService {
+    fun execute(
+        astNodes: List<ASTNode>,
+        version: String,
+    ): ExecutionResponse {
         val consoleInputReader = ConsoleInputReader()
         val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader).buildInterpreter()
 
