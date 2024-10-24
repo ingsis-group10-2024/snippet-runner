@@ -24,12 +24,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build with Gradle
-        run: ./gradlew assemble
-        env:
-          GITHUB_ACTOR: ${{ github.repository_owner }}
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-
       - name: Build and Push to GitHub Packages
         id: docker_build
         uses: docker/build-push-action@v4
