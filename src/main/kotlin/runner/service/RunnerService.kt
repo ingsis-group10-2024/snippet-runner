@@ -1,16 +1,16 @@
-package language.service
+package runner.service
 
-import language.model.dto.ExecutionResponse
-import language.model.dto.FormatResponse
-import language.model.dto.ValidationResponse
-import language.service.common.FormatService
-import language.service.common.InterpreterService
-import language.service.common.ParserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import runner.model.dto.ExecutionResponse
+import runner.model.dto.FormatResponse
+import runner.model.dto.ValidationResponse
+import runner.service.common.FormatService
+import runner.service.common.InterpreterService
+import runner.service.common.ParserService
 
 @Service
-class LanguageService(
+class RunnerService(
     @Autowired private val parserService: ParserService,
     @Autowired private val formatterService: FormatService,
     @Autowired private val interpreterService: InterpreterService,

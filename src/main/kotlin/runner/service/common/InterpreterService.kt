@@ -1,11 +1,11 @@
-package language.service.common
+package runner.service.common
 
 import InterpreterFactory
 import ast.ASTNode
 import common.DefaultPrintEmitter
-import language.model.dto.ExecutionResponse
 import org.springframework.stereotype.Service
 import reader.ConsoleInputReader
+import runner.model.dto.ExecutionResponse
 import variable.VariableMap
 
 @Service

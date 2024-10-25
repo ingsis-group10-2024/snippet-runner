@@ -1,4 +1,4 @@
-package language.model.dto
+package runner.model.dto
 
 import org.jetbrains.annotations.NotNull
 

@@ -1,9 +1,9 @@
-package language.service.common
+package runner.service.common
 
 import ast.ASTNode
 import implementation.Formatter
-import language.model.dto.FormatResponse
 import org.springframework.stereotype.Service
+import runner.model.dto.FormatResponse
 
 @Service
 class FormatService {
