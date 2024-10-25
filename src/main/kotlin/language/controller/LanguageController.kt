@@ -50,8 +50,7 @@ class LanguageController(
     fun lintSnippet(
         @RequestBody snippetRequest: SnippetRequest,
     ): ResponseEntity<ValidationResponse> {
-        val content = snippetRequest.content
-        val lintResult = languageService.lintSnippet(content, version = snippetRequest.languageVersion)
+        val lintResult = languageService.lintSnippet(snippetRequest.content, version = snippetRequest.languageVersion)
         return ResponseEntity.ok(lintResult)
     }
 
