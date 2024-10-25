@@ -1,10 +1,9 @@
-name: "Continuos Deployment - Dev ツ"
+name: "CD - Dev ツ"
 
 on:
   push:
     branches:
       - dev
-  workflow_dispatch:
 
 jobs:
   build-and-publish:
@@ -30,7 +29,7 @@ jobs:
         with:
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ghcr.io/ingsis-group10-2024/snippet-language-dev:latest
+          tags: ghcr.io/ingsis-group10-2024/snippet-runner-dev:latest
           build-args: |
             GITHUB_ACTOR=${{ github.repository_owner }}
             GITHUB_TOKEN=${{ secrets.TOKEN }}

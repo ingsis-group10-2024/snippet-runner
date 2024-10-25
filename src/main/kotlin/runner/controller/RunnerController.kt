@@ -1,22 +1,22 @@
-package language.controller
+package runner.controller
 
-import language.model.dto.ExecutionResponse
-import language.model.dto.FormatResponse
-import language.model.dto.SnippetProcessResponse
-import language.model.dto.SnippetRequest
-import language.model.dto.ValidationResponse
-import language.service.LanguageService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import runner.model.dto.ExecutionResponse
+import runner.model.dto.FormatResponse
+import runner.model.dto.SnippetProcessResponse
+import runner.model.dto.SnippetRequest
+import runner.model.dto.ValidationResponse
+import runner.service.RunnerService
 
 @RestController
-@RequestMapping("/language")
-class LanguageController(
-    @Autowired private val languageService: LanguageService,
+@RequestMapping("/runner")
+class RunnerController(
+    @Autowired private val runnerService: RunnerService,
 ) {
     @PostMapping("/process")
     fun processSnippet(
@@ -24,9 +24,9 @@ class LanguageController(
     ): ResponseEntity<SnippetProcessResponse> {
         val content = snippetRequest.content
 
-        val executeResult = languageService.executeSnippet(content, version = snippetRequest.languageVersion)
-        val lintResult = languageService.lintSnippet(content, version = snippetRequest.languageVersion)
-        val formatResult = languageService.formatSnippet(content, version = snippetRequest.languageVersion)
+        val executeResult = runnerService.executeSnippet(content, version = snippetRequest.languageVersion)
+        val lintResult = runnerService.lintSnippet(content, version = snippetRequest.languageVersion)
+        val formatResult = runnerService.formatSnippet(content, version = snippetRequest.languageVersion)
 
         val response =
             SnippetProcessResponse(
@@ -42,7 +42,7 @@ class LanguageController(
         @RequestBody snippetRequest: SnippetRequest,
     ): ResponseEntity<ExecutionResponse> {
         val content = snippetRequest.content
-        val executeResult = languageService.executeSnippet(content, version = snippetRequest.languageVersion)
+        val executeResult = runnerService.executeSnippet(content, version = snippetRequest.languageVersion)
         return ResponseEntity.ok(executeResult)
     }
 
@@ -51,7 +51,7 @@ class LanguageController(
         @RequestBody snippetRequest: SnippetRequest,
     ): ResponseEntity<ValidationResponse> {
         val content = snippetRequest.content
-        val lintResult = languageService.lintSnippet(content, version = snippetRequest.languageVersion)
+        val lintResult = runnerService.lintSnippet(content, version = snippetRequest.languageVersion)
         return ResponseEntity.ok(lintResult)
     }
 
@@ -60,7 +60,7 @@ class LanguageController(
         @RequestBody snippetRequest: SnippetRequest,
     ): ResponseEntity<FormatResponse> {
         val content = snippetRequest.content
-        val formatResult = languageService.formatSnippet(content, version = snippetRequest.languageVersion)
+        val formatResult = runnerService.formatSnippet(content, version = snippetRequest.languageVersion)
         return ResponseEntity.ok(formatResult)
     }
 }

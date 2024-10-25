@@ -1,12 +1,12 @@
-package language.service.common
+package runner.service.common
 
 import ast.ASTNode
 import common.DefaultConfigLoader
 import common.DefaultLexerConfig
-import language.exception.InvalidSnippetException
-import language.model.dto.ValidationResponse
 import org.springframework.stereotype.Service
 import parser.Parser
+import runner.exception.InvalidSnippetException
+import runner.model.dto.ValidationResponse
 import sca.StaticCodeAnalyzer
 import token.Token
 

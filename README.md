@@ -1,7 +1,7 @@
-# Snippet Language
+# Snippet Runner
 
 ### Description
-Snippet Language handles the static code validation, test execution, and formatting of code snippets.
+Snippet Runner handles the static code validation, test execution, and formatting of code snippets.
 
 ### Features
 * Perform static code validation (linting) on snippets.

@@ -1,4 +1,4 @@
-package language.model.dto
+package runner.model.dto
 
 data class SnippetProcessResponse(
     val executeResult: ExecutionResponse,

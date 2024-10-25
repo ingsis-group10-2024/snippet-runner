@@ -1,11 +1,11 @@
-package language
+package runner
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class SnippetLanguageApplication
+class SnippetRunnerApplication
 
 fun main(args: Array<String>) {
-    runApplication<SnippetLanguageApplication>(*args)
+    runApplication<SnippetRunnerApplication>(*args)
 }

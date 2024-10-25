@@ -1,4 +1,4 @@
-package language.exception
+package runner.exception
 
 class InvalidSnippetException(
     val errors: List<String>,
