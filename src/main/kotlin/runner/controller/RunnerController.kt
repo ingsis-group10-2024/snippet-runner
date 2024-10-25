@@ -50,8 +50,7 @@ class RunnerController(
     fun lintSnippet(
         @RequestBody snippetRequest: SnippetRequest,
     ): ResponseEntity<ValidationResponse> {
-        val content = snippetRequest.content
-        val lintResult = runnerService.lintSnippet(content, version = snippetRequest.languageVersion)
+        val lintResult = runnerService.lintSnippet(snippetRequest.content, version = snippetRequest.languageVersion)
         return ResponseEntity.ok(lintResult)
     }
 
