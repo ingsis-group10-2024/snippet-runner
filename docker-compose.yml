@@ -1,15 +1,15 @@
-version: '3'
+version: '3.8'
 
 services:
 
-  db:
+  language-db:
     image: postgres:15
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5433:5432"
+      - "5435:5432"
 
   app:
     container_name: "snippet-language"
@@ -23,4 +23,5 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     depends_on:
-      - db
+      - language-db
+
