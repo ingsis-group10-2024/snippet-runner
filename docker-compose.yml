@@ -12,7 +12,7 @@ services:
       - "5435:5432"
 
   app:
-    container_name: "snippet-runner"
+    container_name: "runner-local"
     build:
       context: .
       dockerfile: Dockerfile
