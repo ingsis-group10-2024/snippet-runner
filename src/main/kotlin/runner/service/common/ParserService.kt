@@ -38,8 +38,9 @@ class ParserService {
         content: String,
         version: String,
     ): List<ASTNode> {
+        val finalVersion = version.ifBlank { "1.1" }
         val inputStream = content.byteInputStream()
-        val lexer = lexerVersionController.lexerVersionController().getLexer(version, inputStream)
+        val lexer = lexerVersionController.lexerVersionController().getLexer(finalVersion, inputStream)
 
         val tokens = mutableListOf<Token>()
         var token: Token? = lexer.getNextToken()
