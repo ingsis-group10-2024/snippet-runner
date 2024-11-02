@@ -53,6 +53,8 @@ class RunnerController(
     fun lintSnippet(
         @RequestBody snippetRequest: SnippetRequest
     ): ResponseEntity<ValidationResponse> {
+        println("Linting snippet...")
+        println("Name: ${snippetRequest.name}, Content: ${snippetRequest.content}, Language: ${snippetRequest.language}, Language Version: ${snippetRequest.languageVersion}")
         val lintResult = runnerService.lintSnippet(snippetRequest.name, snippetRequest.content, version = snippetRequest.languageVersion)
         return ResponseEntity.ok(lintResult)
     }
