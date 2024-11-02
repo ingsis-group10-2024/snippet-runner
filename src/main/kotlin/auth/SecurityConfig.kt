@@ -23,6 +23,7 @@ class SecurityConfig {
         http
             .authorizeHttpRequests { authorize ->
                 authorize
+                    .requestMatchers("/runner/lint").permitAll() // This allows anyone to access the /runner/lint endpoint without authentication
                     .anyRequest()
                     .authenticated()
             }.cors(withDefaults())
