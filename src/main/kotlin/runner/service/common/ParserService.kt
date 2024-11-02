@@ -16,6 +16,7 @@ class ParserService {
     private val lexerVersionController = DefaultLexerConfig()
 
     fun validateSnippet(
+        name: String,
         content: String,
         version: String,
     ): ValidationResponse {
@@ -31,7 +32,7 @@ class ParserService {
             throw InvalidSnippetException(errorMessages) // Lanza la excepción con los mensajes
         }
 
-        return ValidationResponse(true, content, emptyList())
+        return ValidationResponse(name,true, content, emptyList())
     }
 
     fun parse(

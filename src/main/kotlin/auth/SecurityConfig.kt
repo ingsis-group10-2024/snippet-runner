@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.Customizer.withDefaults
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.web.SecurityFilterChain
 
 /**
@@ -20,9 +22,14 @@ class SecurityConfig {
             .authorizeHttpRequests { authorize ->
                 authorize
                     .anyRequest()
-                    .authenticated() // Cualquier petición debe estar autenticada
-            }.cors(withDefaults()) // Si se necesita CORS
+                    .authenticated()
+            }.cors(withDefaults())
             .oauth2ResourceServer { oauth2 ->
                 oauth2.jwt(withDefaults())
             }.build()
+
+    @Bean
+    fun jwtDecoder(): JwtDecoder {
+        return NimbusJwtDecoder.withJwkSetUri("https://dev-8f0uq116yhuzay1x.us.auth0.com/.well-known/jwks.json").build()
+    }
 }

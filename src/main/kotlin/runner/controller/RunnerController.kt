@@ -12,6 +12,9 @@ import runner.model.dto.SnippetProcessResponse
 import runner.model.dto.SnippetRequest
 import runner.model.dto.ValidationResponse
 import runner.service.RunnerService
+import org.springframework.security.core.Authentication
+import java.security.Principal
+
 
 @RestController
 @RequestMapping("/runner")
@@ -25,7 +28,7 @@ class RunnerController(
         val content = snippetRequest.content
 
         val executeResult = runnerService.executeSnippet(content, version = snippetRequest.languageVersion)
-        val lintResult = runnerService.lintSnippet(content, version = snippetRequest.languageVersion)
+        val lintResult = runnerService.lintSnippet(snippetRequest.name, content, version = snippetRequest.languageVersion)
         val formatResult = runnerService.formatSnippet(content, version = snippetRequest.languageVersion)
 
         val response =
@@ -48,9 +51,9 @@ class RunnerController(
 
     @PostMapping("/lint")
     fun lintSnippet(
-        @RequestBody snippetRequest: SnippetRequest,
+        @RequestBody snippetRequest: SnippetRequest
     ): ResponseEntity<ValidationResponse> {
-        val lintResult = runnerService.lintSnippet(snippetRequest.content, version = snippetRequest.languageVersion)
+        val lintResult = runnerService.lintSnippet(snippetRequest.name, snippetRequest.content, version = snippetRequest.languageVersion)
         return ResponseEntity.ok(lintResult)
     }
 
