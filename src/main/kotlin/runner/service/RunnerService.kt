@@ -25,10 +25,11 @@ class RunnerService(
     }
 
     fun lintSnippet(
+        name: String,
         content: String,
         version: String,
     ): ValidationResponse {
-        val validationResponse = parserService.validateSnippet(content, version)
+        val validationResponse = parserService.validateSnippet(name, content, version)
         return validationResponse
     }
 
