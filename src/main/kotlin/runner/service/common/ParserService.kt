@@ -32,7 +32,7 @@ class ParserService {
             throw InvalidSnippetException(errorMessages) // Lanza la excepción con los mensajes
         }
 
-        return ValidationResponse(name,true, content, emptyList())
+        return ValidationResponse(name, true, content, emptyList())
     }
 
     fun parse(
