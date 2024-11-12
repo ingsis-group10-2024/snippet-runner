@@ -20,9 +20,8 @@ class ParserService {
         name: String,
         content: String,
         version: String,
-        lintingRules: List<RuleDto>
+        lintingRules: List<RuleDto>,
     ): ValidationResponse {
-
         val astNodes = parse(content, version)
         println("AST Nodes: $astNodes") // DEBUG
 
@@ -60,6 +59,4 @@ class ParserService {
         val astNodes = parser.generateAST()
         return astNodes
     }
-
-
 }

@@ -20,20 +20,20 @@ class DefaultConfigLoader : ConfigLoader {
     fun loadConfigWithRules(rules: List<RuleDto>): VerificationConfig {
         val configRules =
             if (rules.isNotEmpty()) {
-            rules.map {
-                ruleDto -> mapToConfigRule(ruleDto)
+                rules.map { ruleDto ->
+                    mapToConfigRule(ruleDto)
+                }
+            } else {
+                loadConfig().activeRules
             }
-        } else {
-            loadConfig().activeRules
-        }
         return VerificationConfig(configRules)
     }
+
     // Method to map a list of RuleDto to a list of ConfigRule
-    private fun mapToConfigRule(ruleDto: RuleDto): ConfigRule {
-        return ConfigRule(
+    private fun mapToConfigRule(ruleDto: RuleDto): ConfigRule =
+        ConfigRule(
             name = ruleDto.name,
             enabled = ruleDto.isActive,
-            value = ruleDto.value?.toIntOrNull() ?: 0 // Convert value to Int or 0 if null
+            value = ruleDto.value?.toIntOrNull() ?: 0, // Convert value to Int or 0 if null
         )
-    }
 }

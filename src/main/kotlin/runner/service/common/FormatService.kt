@@ -15,20 +15,23 @@ import java.nio.file.StandardOpenOption
 
 @Service
 class FormatService {
-
     private val configLoader = DefaultConfigLoader()
 
-    fun format(astNodes: List<ASTNode>, rules: List<RuleDto>): FormatResponse {
+    fun format(
+        astNodes: List<ASTNode>,
+        rules: List<RuleDto>,
+    ): FormatResponse {
         // Check for custom rules
-        val configFilePath = if (rules.isNotEmpty()) {
-            // If there are custom rules, load the configuration with them
-            val verificationConfig = configLoader.loadConfigWithRules(rules)
-            val tempFile = createTempConfigFile(verificationConfig)
-            tempFile.toString()  // Return the path to the temporary file
-        } else {
-            // If there are no custom rules, use the default configuration
-            "src/main/resources/FormatterRules.json"
-        }
+        val configFilePath =
+            if (rules.isNotEmpty()) {
+                // If there are custom rules, load the configuration with them
+                val verificationConfig = configLoader.loadConfigWithRules(rules)
+                val tempFile = createTempConfigFile(verificationConfig)
+                tempFile.toString() // Return the path to the temporary file
+            } else {
+                // If there are no custom rules, use the default configuration
+                "src/main/resources/FormatterRules.json"
+            }
 
         // Create the formatter
         val formatter = Formatter(configFilePath)
@@ -42,20 +45,25 @@ class FormatService {
 
         // Convert the custom rules to JSON format
         val objectMapper = jacksonObjectMapper()
-        val customFormatterRules = CustomizableFormatterRules(
-            spaceBeforeColon = config.activeRules.find { it.name == "spaceBeforeColon" }?.value ?: 1,
-            spaceAfterColon = config.activeRules.find { it.name == "spaceAfterColon" }?.value ?: 1,
-            spaceBeforeAndAfterAssignationOperator = config.activeRules.find { it.name == "spaceBeforeAndAfterAssignationOperator" }?.value ?: 1,
-            newlinesBeforePrintln = config.activeRules.find { it.name == "newlinesBeforePrintln" }?.value ?: 1
-        )
+        val customFormatterRules =
+            CustomizableFormatterRules(
+                spaceBeforeColon = config.activeRules.find { it.name == "spaceBeforeColon" }?.value ?: 1,
+                spaceAfterColon = config.activeRules.find { it.name == "spaceAfterColon" }?.value ?: 1,
+                spaceBeforeAndAfterAssignationOperator =
+                    config.activeRules.find { it.name == "spaceBeforeAndAfterAssignationOperator" }?.value ?: 1,
+                newlinesBeforePrintln = config.activeRules.find { it.name == "newlinesBeforePrintln" }?.value ?: 1,
+            )
 
         // Map the custom rules to a JSON string
-        val jsonConfig = objectMapper.writeValueAsString(
-            mapOf("newlinesAfterSemicolon" to 1, // default value
-                "spacesBetweenTokens" to 1, // default value
-                "spacesBeforeAndAfterOperators" to 1, // default value
-                "custom" to customFormatterRules)
-        )
+        val jsonConfig =
+            objectMapper.writeValueAsString(
+                mapOf(
+                    "newlinesAfterSemicolon" to 1, // default value
+                    "spacesBetweenTokens" to 1, // default value
+                    "spacesBeforeAndAfterOperators" to 1, // default value
+                    "custom" to customFormatterRules,
+                ),
+            )
 
         // Write the JSON string to the temporary file
         Files.write(tempFile.toPath(), jsonConfig.toByteArray(), StandardOpenOption.WRITE)

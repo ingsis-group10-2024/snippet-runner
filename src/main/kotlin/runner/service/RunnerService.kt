@@ -22,7 +22,7 @@ class RunnerService(
     @Autowired private val parserService: ParserService,
     @Autowired private val formatterService: FormatService,
     @Autowired private val interpreterService: InterpreterService,
-    @Autowired private val restTemplate: RestTemplate
+    @Autowired private val restTemplate: RestTemplate,
 ) {
     fun executeSnippet(
         content: String,
@@ -38,7 +38,7 @@ class RunnerService(
         content: String,
         version: String,
         authorizationHeader: String,
-        ): ValidationResponse {
+    ): ValidationResponse {
         val lintingRules = getUserRules(authorizationHeader, "http://snippet-permission:8080/rules/lint")
         val validationResponse = parserService.validateSnippet(name, content, version, lintingRules)
         return validationResponse
@@ -48,7 +48,7 @@ class RunnerService(
         content: String,
         version: String,
         authorizationHeader: String,
-        ): FormatResponse {
+    ): FormatResponse {
         val formattingRules = getUserRules(authorizationHeader, "http://snippet-permission:8080/rules/format")
         val astNodes = parserService.parse(content, version)
         val formatterResponse = formatterService.format(astNodes, formattingRules)
@@ -56,7 +56,10 @@ class RunnerService(
     }
 
     // Method to make a REST call to get user's linting&formatting rules
-    private fun getUserRules(authorizationHeader: String, url: String): List<RuleDto> {
+    private fun getUserRules(
+        authorizationHeader: String,
+        url: String,
+    ): List<RuleDto> {
         val headers: MultiValueMap<String, String> = LinkedMultiValueMap()
         headers.add("Authorization", authorizationHeader)
         headers.add("Content-Type", "application/json")
@@ -68,9 +71,8 @@ class RunnerService(
                 url,
                 HttpMethod.GET,
                 requestEntity,
-                object : ParameterizedTypeReference<List<RuleDto>>() {}
+                object : ParameterizedTypeReference<List<RuleDto>>() {},
             )
         return response.body ?: emptyList()
-
     }
 }
