@@ -3,6 +3,7 @@ package runner.service.common
 import InterpreterFactory
 import ast.ASTNode
 import common.DefaultPrintEmitter
+import emitter.PrinterEmitter
 import org.springframework.stereotype.Service
 import reader.ConsoleInputReader
 import runner.model.dto.ExecutionResponse
@@ -15,7 +16,8 @@ class InterpreterService {
         version: String,
     ): ExecutionResponse {
         val consoleInputReader = ConsoleInputReader()
-        val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader).buildInterpreter()
+        val outputter = PrinterEmitter()
+        val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader, outputter).buildInterpreter()
 
         val output = mutableListOf<String>() // List to capture the output
         val errors = mutableListOf<String>() // List to capture the errors
