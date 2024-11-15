@@ -34,13 +34,13 @@ repositories {
     }
 }
 dependencies {
-    implementation 'printscript:common:2.1.10-SNAPSHOT'
-    implementation 'printscript:cli:2.1.10-SNAPSHOT'
-    implementation 'printscript:parser:2.1.10-SNAPSHOT'
-    implementation 'printscript:lexer:2.1.10-SNAPSHOT'
-    implementation 'printscript:interpreter:2.1.10-SNAPSHOT'
-    implementation 'printscript:formatter:2.1.10-SNAPSHOT'
-    implementation 'printscript:sca:2.1.10-SNAPSHOT'
+    implementation 'printscript:common:2.1.10'
+    implementation 'printscript:cli:2.1.10'
+    implementation 'printscript:parser:2.1.10'
+    implementation 'printscript:lexer:2.1.10'
+    implementation 'printscript:interpreter:2.1.10'
+    implementation 'printscript:formatter:2.1.10'
+    implementation 'printscript:sca:2.1.10'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
