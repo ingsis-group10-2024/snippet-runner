@@ -6,8 +6,8 @@ import common.DefaultLexerConfig
 import org.springframework.stereotype.Service
 import parser.Parser
 import runner.exception.InvalidSnippetException
-import runner.model.dto.RuleDto
-import runner.model.dto.ValidationResponse
+import runner.model.dto.RuleDTO
+import runner.model.dto.lint.ValidationResponse
 import sca.StaticCodeAnalyzer
 import token.Token
 
@@ -20,7 +20,7 @@ class ParserService {
         name: String,
         content: String,
         version: String,
-        lintingRules: List<RuleDto>,
+        lintingRules: List<RuleDTO>,
     ): ValidationResponse {
         val astNodes = parse(content, version)
         println("AST Nodes: $astNodes") // DEBUG

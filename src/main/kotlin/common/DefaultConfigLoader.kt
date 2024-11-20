@@ -4,7 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import config.ConfigLoader
 import config.ConfigRule
 import config.VerificationConfig
-import runner.model.dto.RuleDto
+import runner.model.dto.RuleDTO
 
 class DefaultConfigLoader : ConfigLoader {
     private val objectMapper = jacksonObjectMapper()
@@ -17,7 +17,7 @@ class DefaultConfigLoader : ConfigLoader {
         )
     }
 
-    fun loadConfigWithRules(rules: List<RuleDto>): VerificationConfig {
+    fun loadConfigWithRules(rules: List<RuleDTO>): VerificationConfig {
         val configRules =
             if (rules.isNotEmpty()) {
                 rules.map { ruleDto ->
@@ -30,7 +30,7 @@ class DefaultConfigLoader : ConfigLoader {
     }
 
     // Method to map a list of RuleDto to a list of ConfigRule
-    private fun mapToConfigRule(ruleDto: RuleDto): ConfigRule =
+    private fun mapToConfigRule(ruleDto: RuleDTO): ConfigRule =
         ConfigRule(
             name = ruleDto.name,
             enabled = ruleDto.isActive,
