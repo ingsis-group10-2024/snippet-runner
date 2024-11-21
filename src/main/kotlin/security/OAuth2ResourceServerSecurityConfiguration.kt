@@ -3,7 +3,10 @@ package security
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod.GET
+import org.springframework.http.HttpMethod.POST
+import org.springframework.http.HttpMethod.PUT
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
@@ -27,11 +30,23 @@ class OAuth2ResourceServerSecurityConfiguration(
         http
             .authorizeHttpRequests {
                 it
+                    .requestMatchers(HttpMethod.OPTIONS, "/**")
+                    .permitAll()
                     .requestMatchers("/")
                     .permitAll()
                     .requestMatchers(GET, "/runner/")
                     .hasAuthority("SCOPE_read:snippet")
                     .requestMatchers(GET, "/runner/*")
+                    .hasAuthority("SCOPE_read:snippet")
+                    .requestMatchers(POST, "/runner/*")
+                    .hasAuthority("SCOPE_read:snippet")
+                    .requestMatchers(PUT, "/runner/rules/format")
+                    .hasAuthority("SCOPE_read:snippet")
+                    .requestMatchers(PUT, "/runner/rules/lint")
+                    .hasAuthority("SCOPE_read:snippet")
+                    .requestMatchers(POST, "/runner/rules/format")
+                    .hasAuthority("SCOPE_read:snippet")
+                    .requestMatchers(GET, "/runner/rules")
                     .hasAuthority("SCOPE_read:snippet")
                     .anyRequest()
                     .authenticated()
@@ -50,7 +65,7 @@ class OAuth2ResourceServerSecurityConfiguration(
         config.applyPermitDefaultValues()
         config.allowCredentials = true
         config.allowedOrigins = listOf("http://localhost:5173", "http://printscript-ui:80")
-        config.allowedHeaders = listOf("authorization", "content-type", "*")
+        config.allowedHeaders = listOf("authorization", "content-type")
         config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
 
         source.registerCorsConfiguration("/**", config)

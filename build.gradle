@@ -59,6 +59,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
 
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    implementation 'org.springframework.data:spring-data-redis'
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")  // Coroutines for Reactor
 }
 
 kotlin {

@@ -1,4 +1,4 @@
-package runner.model.dto
+package runner.model.dto.lint
 
 import sca.StaticCodeAnalyzerError
 
