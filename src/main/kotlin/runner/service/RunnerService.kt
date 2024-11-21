@@ -6,10 +6,10 @@ import runner.model.dto.ExecutionResponse
 import runner.model.dto.format.FormatResponse
 import runner.model.dto.lint.ValidationResponse
 import runner.model.enums.RuleTypeEnum
+import runner.redis.model.SnippetsValidationMessage
 import runner.service.common.FormatService
 import runner.service.common.InterpreterService
 import runner.service.common.ParserService
-import java.security.Principal
 
 @Service
 class RunnerService(
@@ -31,23 +31,49 @@ class RunnerService(
         name: String,
         content: String,
         version: String,
-        principal: Principal,
+        userId: String,
     ): ValidationResponse {
-        val lintingRules = ruleService.getRules(userId = principal.name, ruleType = RuleTypeEnum.LINT)
+        val lintingRules = ruleService.getRules(userId = userId, ruleType = RuleTypeEnum.LINT)
         val validationResponse = parserService.validateSnippet(name, content, version, lintingRules)
         return validationResponse
+    }
+
+    fun validateOrFormatSnippets(snippetsValidationMessage: SnippetsValidationMessage) {
+        val snippets = snippetsValidationMessage.snippets
+        val ruleType = snippetsValidationMessage.ruleType
+
+        if (ruleType == RuleTypeEnum.FORMAT.name) {
+            snippets.forEach { snippet ->
+                println("Formatting snippet with ID: ${snippet.id}, Language: ${snippet.language}")
+
+                formatSnippet(
+                    content = snippet.content,
+                    version = snippet.language,
+                    userId = snippet.userId,
+                )
+            }
+            return
+        }
+        snippets.forEach { snippet ->
+            println("Validating snippet with ID: ${snippet.id}, Language: ${snippet.language}")
+
+            lintSnippet(
+                name = snippet.name,
+                content = snippet.content,
+                version = snippet.language,
+                userId = snippet.userId,
+            )
+        }
     }
 
     fun formatSnippet(
         content: String,
         version: String,
-        principal: Principal,
+        userId: String,
     ): FormatResponse {
-        val formattingRules = ruleService.getRules(userId = principal.name, ruleType = RuleTypeEnum.FORMAT)
+        val formattingRules = ruleService.getRules(userId = userId, ruleType = RuleTypeEnum.FORMAT)
         val astNodes = parserService.parse(content, version)
         val formatterResponse = formatterService.format(astNodes, formattingRules)
         return formatterResponse
     }
-
-
 }

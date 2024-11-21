@@ -2,7 +2,6 @@ package runner.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -17,13 +16,12 @@ import java.security.Principal
 
 @RestController
 @RequestMapping("/runner/rules")
-class RuleController (
+class RuleController(
     @Autowired private val ruleService: RuleService,
 ) {
-
     @PutMapping("/format")
     fun modifyFormatRule(
-        @RequestBody newRules: List<RuleDTO>,  // New rules to be added
+        @RequestBody newRules: List<RuleDTO>, // New rules to be added
         principal: Principal,
     ): ResponseEntity<List<RuleDTO>> {
         val userId = principal.name
@@ -33,7 +31,7 @@ class RuleController (
 
     @PutMapping("/lint")
     fun modifyLintingRule(
-        @RequestBody newRules: List<RuleDTO>,  // New rules to be added
+        @RequestBody newRules: List<RuleDTO>, // New rules to be added
         principal: Principal,
     ): ResponseEntity<List<RuleDTO>> {
         val userId = principal.name
@@ -51,17 +49,13 @@ class RuleController (
     }
 
     @GetMapping("/format")
-    fun getFormatRules(
-        principal: Principal,
-    ): ResponseEntity<List<RuleDTO>> {
+    fun getFormatRules(principal: Principal): ResponseEntity<List<RuleDTO>> {
         val rules = ruleService.getRules(userId = principal.name, ruleType = RuleTypeEnum.FORMAT)
         return ResponseEntity.ok(rules)
     }
 
     @GetMapping("/lint")
-    fun getLintingRules(
-        principal: Principal,
-    ): ResponseEntity<List<RuleDTO>> {
+    fun getLintingRules(principal: Principal): ResponseEntity<List<RuleDTO>> {
         val rules = ruleService.getRules(userId = principal.name, ruleType = RuleTypeEnum.LINT)
         return ResponseEntity.ok(rules)
     }

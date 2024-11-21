@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import runner.model.enums.RuleTypeEnum
-import java.util.*
+import java.util.UUID
 
 @Entity
 @Table(name = "rules")

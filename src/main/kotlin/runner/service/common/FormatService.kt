@@ -7,8 +7,8 @@ import config.CustomizableFormatterRules
 import config.VerificationConfig
 import implementation.Formatter
 import org.springframework.stereotype.Service
-import runner.model.dto.format.FormatResponse
 import runner.model.dto.RuleDTO
+import runner.model.dto.format.FormatResponse
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
