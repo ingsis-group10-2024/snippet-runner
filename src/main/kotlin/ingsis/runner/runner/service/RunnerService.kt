@@ -8,6 +8,8 @@ import ingsis.runner.runner.redis.model.SnippetsValidationMessage
 import ingsis.runner.runner.service.common.FormatService
 import ingsis.runner.runner.service.common.InterpreterService
 import ingsis.runner.runner.service.common.ParserService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -18,12 +20,17 @@ class RunnerService(
     @Autowired private val interpreterService: InterpreterService,
     @Autowired private val ruleService: RuleService,
 ) {
+
+    private val logger: Logger = LoggerFactory.getLogger(RunnerService::class.java)
+
     fun executeSnippet(
         content: String,
         version: String,
     ): ExecutionResponse {
+        logger.info("Executing snippet with version: $version and content: $content")
         val astNodes = parserService.parse(content, version)
         val executionResponse = interpreterService.execute(astNodes, version)
+        logger.info("Snippet executed successfully.")
         return executionResponse
     }
 
@@ -44,8 +51,6 @@ class RunnerService(
 
         if (ruleType == RuleTypeEnum.FORMAT.name) {
             snippets.forEach { snippet ->
-                println("Formatting snippet with ID: ${snippet.id}, Language: ${snippet.language}")
-
                 formatSnippet(
                     content = snippet.content,
                     version = snippet.language,
@@ -55,8 +60,6 @@ class RunnerService(
             return
         }
         snippets.forEach { snippet ->
-            println("Validating snippet with ID: ${snippet.id}, Language: ${snippet.language}")
-
             lintSnippet(
                 name = snippet.name,
                 content = snippet.content,
@@ -71,6 +74,7 @@ class RunnerService(
         version: String,
         userId: String,
     ): FormatResponse {
+        logger.info("Formatting snippet with version: $version and content: $content")
         val formattingRules = ruleService.getRules(userId = userId, ruleType = RuleTypeEnum.FORMAT)
         val astNodes = parserService.parse(content, version)
         val formatterResponse = formatterService.format(astNodes, formattingRules)
