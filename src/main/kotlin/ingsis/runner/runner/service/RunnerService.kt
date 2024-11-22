@@ -20,7 +20,6 @@ class RunnerService(
     @Autowired private val interpreterService: InterpreterService,
     @Autowired private val ruleService: RuleService,
 ) {
-
     private val logger: Logger = LoggerFactory.getLogger(RunnerService::class.java)
 
     fun executeSnippet(

@@ -21,20 +21,19 @@ class RuleService
         private val ruleRepository: RuleRepository,
         private val ruleChangerProducer: RedisRuleChangerProducer,
     ) {
-    private val logger: Logger = LoggerFactory.getLogger(RunnerService::class.java)
+        private val logger: Logger = LoggerFactory.getLogger(RunnerService::class.java)
 
-
-    fun getRules(
+        fun getRules(
             userId: String,
             ruleType: RuleTypeEnum,
         ): List<RuleDTO> {
             // Get all rules for the user and the rule type
-        logger.info("Getting rules for user: $userId and rule type: $ruleType")
+            logger.info("Getting rules for user: $userId and rule type: $ruleType")
             val rules =
                 ruleRepository
                     .findByUserIdAndType(userId, ruleType)
                     .filter { it.isActive } // Filter out inactive rules
-        logger.info("Found rules: $rules")
+            logger.info("Found rules: $rules")
             // Convert the rules to DTOs
             return rules.map { rule ->
                 RuleDTO(rule.id, rule.name, rule.isActive, rule.value)

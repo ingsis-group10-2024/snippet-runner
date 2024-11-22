@@ -6,7 +6,6 @@ import ingsis.runner.common.DefaultLexerConfig
 import ingsis.runner.runner.exception.InvalidSnippetException
 import ingsis.runner.runner.model.dto.RuleDTO
 import ingsis.runner.runner.model.dto.lint.ValidationResponse
-import ingsis.runner.runner.service.RunnerService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
