@@ -30,14 +30,15 @@ class FormatService {
                 tempFile.toString()
             } else {
                 // Load the default formatter rules from resources
-                val inputStream: InputStream = this::class.java.classLoader
-                    .getResourceAsStream("FormatterRules.json")
-                    ?: throw Exception("FormatterRules.json file not found in resources.")
+                val inputStream: InputStream =
+                    this::class.java.classLoader
+                        .getResourceAsStream("FormatterRules.json")
+                        ?: throw Exception("FormatterRules.json file not found in resources.")
 
                 // If necessary, save the inputStream content to a temporary file
                 val tempFile = Files.createTempFile("formatterRules", ".json").toFile()
                 inputStream.copyTo(tempFile.outputStream())
-                tempFile.toString()  // Return the temporary file path
+                tempFile.toString() // Return the temporary file path
             }
 
         // Create the formatter
