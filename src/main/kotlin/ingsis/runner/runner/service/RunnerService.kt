@@ -45,7 +45,9 @@ class RunnerService(
     }
 
     fun validateOrFormatSnippets(snippetsValidationMessage: SnippetsValidationMessage) {
+        logger.info("Consuming the message to validate or format snippets for rule type: ${snippetsValidationMessage.ruleType}")
         val snippets = snippetsValidationMessage.snippets
+        logger.info("Snippets are: $snippets")
         val ruleType = snippetsValidationMessage.ruleType
 
         if (ruleType == RuleTypeEnum.FORMAT.name) {

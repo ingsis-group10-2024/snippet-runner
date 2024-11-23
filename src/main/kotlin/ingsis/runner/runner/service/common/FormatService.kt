@@ -10,6 +10,7 @@ import ingsis.runner.runner.model.dto.RuleDTO
 import ingsis.runner.runner.model.dto.format.FormatResponse
 import org.springframework.stereotype.Service
 import java.io.File
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
@@ -21,16 +22,23 @@ class FormatService {
         astNodes: List<ASTNode>,
         rules: List<RuleDTO>,
     ): FormatResponse {
-        // Check for custom rules
+        // Check for custom rule. If they exist then create a temporary file with them
         val configFilePath =
             if (rules.isNotEmpty()) {
-                // If there are custom rules, load the configuration with them
                 val verificationConfig = configLoader.loadConfigWithRules(rules)
                 val tempFile = createTempConfigFile(verificationConfig)
-                tempFile.toString() // Return the path to the temporary file
+                tempFile.toString()
             } else {
-                // If there are no custom rules, use the default configuration
-                "src/main/resources/FormatterRules.json"
+                // Load the default formatter rules from resources
+                val inputStream: InputStream =
+                    this::class.java.classLoader
+                        .getResourceAsStream("FormatterRules.json")
+                        ?: throw Exception("FormatterRules.json file not found in resources.")
+
+                // If necessary, save the inputStream content to a temporary file
+                val tempFile = Files.createTempFile("formatterRules", ".json").toFile()
+                inputStream.copyTo(tempFile.outputStream())
+                tempFile.toString() // Return the temporary file path
             }
 
         // Create the formatter
