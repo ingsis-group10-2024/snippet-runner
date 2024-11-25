@@ -1,10 +1,22 @@
-# Snippet Runner
+# Runner Service
 
-### Description
-Snippet Runner handles the static code validation, test execution, and formatting of code snippets.
+#### Encargado de ejecutar, formatear y lintear snippets. Proporciona funciones para asegurar que los snippets cumplan con las reglas de estilo y puedan ejecutarse correctamente.
 
-### Features
-* Perform static code validation (linting) on snippets.
-* Execute test cases on snippets and provide results.
-* Format code snippets based on predefined rules.
-* Define and manage linting and formatting rules.
+### Endpoints del Runner Service
+
+* POST `/runner/execute`
+Ejecuta un snippet.
+* POST `/runner/lint`
+Valida un snippet mediante linteo.
+* POST `/runner/format`
+Aplica formato a un snippet.
+* GET `/runner/rules/format`
+Obtiene las reglas de formateo habilitadas.
+* GET `/runner/rules/lint`
+Obtiene las reglas de linteo habilitadas.
+* PUT `/runner/rules/format`
+Modifica las reglas de formateo.
+* PUT `/runner/rules/lint`
+Modifica las reglas de linteo.
+* DELETE `/runner/rules/{ruleId}`
+Elimina una regla existente.
