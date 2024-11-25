@@ -1,6 +1,6 @@
 # Runner Service
 
-#### Encargado de ejecutar, formatear y lintear snippets. Proporciona funciones para asegurar que los snippets cumplan con las reglas de estilo y puedan ejecutarse correctamente.
+#### Encargado de ejecutar, formatear y lintear snippets. 
 
 ### Endpoints del Runner Service
 
