@@ -4,7 +4,6 @@ import ast.ASTNode
 import ingsis.runner.runner.model.dto.RuleDTO
 import ingsis.runner.runner.service.common.ParserService
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.mockito.MockitoAnnotations

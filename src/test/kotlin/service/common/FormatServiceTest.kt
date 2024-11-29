@@ -2,10 +2,7 @@ package service.common
 
 import ast.ASTNode
 import ingsis.runner.runner.model.dto.RuleDTO
-import ingsis.runner.runner.service.RuleService
-import ingsis.runner.runner.service.RunnerService
 import ingsis.runner.runner.service.common.FormatService
-import ingsis.runner.runner.service.common.InterpreterService
 import ingsis.runner.runner.service.common.ParserService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -21,14 +18,6 @@ class FormatServiceTest {
 
     @Mock
     private lateinit var formatterService: FormatService
-
-    @Mock
-    private lateinit var interpreterService: InterpreterService
-
-    @Mock
-    private lateinit var ruleService: RuleService
-
-    private lateinit var runnerService: RunnerService
 
     @BeforeEach
     fun setUp() {
