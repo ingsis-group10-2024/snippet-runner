@@ -2,6 +2,7 @@ package ingsis.runner.runner.service
 
 import ingsis.runner.runner.model.dto.ExecutionResponse
 import ingsis.runner.runner.model.dto.RuleDTO
+import ingsis.runner.runner.model.dto.UpdateSnippetInput
 import ingsis.runner.runner.model.dto.format.FormatResponse
 import ingsis.runner.runner.model.dto.lint.ValidationResponse
 import ingsis.runner.runner.model.enums.RuleTypeEnum
@@ -86,21 +87,52 @@ class RunnerService(
         logger.info("Snippet: $snippetToValidate")
         val ruleType = snippetToValidate.ruleType
 
+        val updatedSnippetContent: String
+
         if (ruleType == RuleTypeEnum.FORMAT.name) {
-            formatSnippet(
-                content = snippetToValidate.content,
-                version = snippetToValidate.languageVersion,
-                userId = snippetToValidate.authorId,
-                authorizationHeader = snippetToValidate.authorizationHeader,
-            )
+            val formatResponse =
+                formatSnippet(
+                    content = snippetToValidate.content,
+                    version = snippetToValidate.languageVersion,
+                    userId = snippetToValidate.authorId,
+                    authorizationHeader = snippetToValidate.authorizationHeader,
+                )
+            updatedSnippetContent = formatResponse.formattedContent
         } else {
-            lintSnippet(
-                name = snippetToValidate.name,
-                content = snippetToValidate.content,
-                version = snippetToValidate.languageVersion,
-                userId = snippetToValidate.authorId,
-                authorizationHeader = snippetToValidate.authorizationHeader,
+            val validationResponse =
+                lintSnippet(
+                    name = snippetToValidate.name,
+                    content = snippetToValidate.content,
+                    version = snippetToValidate.languageVersion,
+                    userId = snippetToValidate.authorId,
+                    authorizationHeader = snippetToValidate.authorizationHeader,
+                )
+            updatedSnippetContent =
+                if (validationResponse.isValid) {
+                    validationResponse.content
+                } else {
+                    // If the snippet is not valid, return the original content
+                    validationResponse.content
+                }
+        }
+        val request = UpdateSnippetInput(content = updatedSnippetContent)
+        val url = "http://snippet-manager:8080/manager/snippet/update/${snippetToValidate.id}"
+        val headers: MultiValueMap<String, String> = LinkedMultiValueMap()
+        headers.add("Authorization", snippetToValidate.authorizationHeader)
+        headers.add("Content-Type", "application/json")
+        val requestEntity = HttpEntity(request, headers)
+        val response: ResponseEntity<String> =
+            restTemplate.exchange(
+                url,
+                HttpMethod.PUT,
+                requestEntity,
+                String::class.java,
             )
+        logger.info("Snippet updated successfully: ${response.body}")
+        if (response.statusCode.is2xxSuccessful) {
+            logger.info("Snippet successfully updated in manager with ID: ${snippetToValidate.id}")
+        } else {
+            logger.error("Failed to update snippet in manager. Status: ${response.statusCode}")
         }
     }
 

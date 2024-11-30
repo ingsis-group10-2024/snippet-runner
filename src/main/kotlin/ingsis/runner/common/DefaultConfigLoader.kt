@@ -12,7 +12,6 @@ class DefaultConfigLoader : ConfigLoader {
     private val objectMapper = jacksonObjectMapper()
     private val logger: Logger = LoggerFactory.getLogger(DefaultConfigLoader::class.java)
 
-
     override fun loadConfig(): VerificationConfig {
         val configFilePath = "StaticCodeAnalyzerRules.json"
         return objectMapper.readValue(

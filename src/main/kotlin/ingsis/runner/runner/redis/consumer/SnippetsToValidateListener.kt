@@ -21,7 +21,6 @@ class SnippetsToValidateListener(
     redisTemplate: RedisTemplate<String, String>,
     private val runnerService: RunnerService,
 ) : RedisStreamConsumer<String>(streamKey, groupId, redisTemplate) {
-
     private val logger: Logger = LoggerFactory.getLogger(SnippetsToValidateListener::class.java)
 
     override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>> =
@@ -43,9 +42,8 @@ class SnippetsToValidateListener(
             // Call the runner service to validate the snippet
             runnerService.validateOrFormatSnippet(snippet)
             logger.info("Snippet processed successfully: ${snippet.id}")
-            }
-        catch (ex: Exception) {
+        } catch (ex: Exception) {
             logger.error("Failed to process message: ${record.value}", ex)
-            }
+        }
     }
 }
