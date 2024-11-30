@@ -47,7 +47,7 @@ class RunnerController(
                 content = snippetRequest.content,
                 version = snippetRequest.languageVersion,
                 userId = principal.name,
-                authorizationHeader = authorizationHeader
+                authorizationHeader = authorizationHeader,
             )
         return ResponseEntity.ok(lintResult)
     }
@@ -60,11 +60,14 @@ class RunnerController(
     ): ResponseEntity<FormatResponse> {
         val content = formatRequest.content
         val formatResult =
-            formatRequest.languageVersion?.let { runnerService.formatSnippet(
-                content = content,
-                version = it,
-                userId = principal.name,
-                authorizationHeader = authorizationHeader) }
+            formatRequest.languageVersion?.let {
+                runnerService.formatSnippet(
+                    content = content,
+                    version = it,
+                    userId = principal.name,
+                    authorizationHeader = authorizationHeader,
+                )
+            }
         return ResponseEntity.ok(formatResult)
     }
 }

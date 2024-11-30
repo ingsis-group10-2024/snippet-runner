@@ -52,26 +52,32 @@ class RunnerService(
         val validationResponse = parserService.validateSnippet(name, content, version, lintingRules)
         return validationResponse
     }
-    
-    private fun getRules(userId: String, ruleTypeEnum: RuleTypeEnum, authorizationHeader: String): List<RuleDTO> {
+
+    private fun getRules(
+        userId: String,
+        ruleTypeEnum: RuleTypeEnum,
+        authorizationHeader: String,
+    ): List<RuleDTO> {
         logger.info("Getting rules for user: $userId and rule type: $ruleTypeEnum")
-        val url: String = if (ruleTypeEnum == RuleTypeEnum.FORMAT) {
-            logger.info("Calling rule manager to get format rules")
-            "http://rule-manager:8080/manager/rules/format"
-        } else {
-            logger.info("Calling rule manager to get lint rules")
-            "http://rule-manager:8080/manager/rules/lint"
-        }
+        val url: String =
+            if (ruleTypeEnum == RuleTypeEnum.FORMAT) {
+                logger.info("Calling rule manager to get format rules")
+                "http://snippet-manager:8080/manager/rules/format"
+            } else {
+                logger.info("Calling rule manager to get lint rules")
+                "http://snippet-manager:8080/manager/rules/lint"
+            }
         val headers: MultiValueMap<String, String> = LinkedMultiValueMap()
         headers.add("Authorization", authorizationHeader)
         headers.add("Content-Type", "application/json")
         val requestEntity = HttpEntity(null, headers)
-        val response: ResponseEntity<List<RuleDTO>> = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            requestEntity,
-            object : ParameterizedTypeReference<List<RuleDTO>>() {}
-        )
+        val response: ResponseEntity<List<RuleDTO>> =
+            restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                requestEntity,
+                object : ParameterizedTypeReference<List<RuleDTO>>() {},
+            )
         return response.body ?: emptyList()
     }
 
@@ -86,7 +92,7 @@ class RunnerService(
                 formatSnippet(
                     content = snippet.content,
                     version = snippet.language,
-                    userId = snippet.userId,
+                    userId = snippet.authorId,
                     authorizationHeader = snippetsValidationMessage.authorizationHeader,
                 )
             }
@@ -97,7 +103,7 @@ class RunnerService(
                 name = snippet.name,
                 content = snippet.content,
                 version = snippet.language,
-                userId = snippet.userId,
+                userId = snippet.authorId,
                 authorizationHeader = snippetsValidationMessage.authorizationHeader,
             )
         }
