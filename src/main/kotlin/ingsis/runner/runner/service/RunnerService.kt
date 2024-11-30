@@ -5,7 +5,7 @@ import ingsis.runner.runner.model.dto.RuleDTO
 import ingsis.runner.runner.model.dto.format.FormatResponse
 import ingsis.runner.runner.model.dto.lint.ValidationResponse
 import ingsis.runner.runner.model.enums.RuleTypeEnum
-import ingsis.runner.runner.redis.model.SnippetsValidationMessage
+import ingsis.runner.runner.redis.model.SnippetToValidate
 import ingsis.runner.runner.service.common.FormatService
 import ingsis.runner.runner.service.common.InterpreterService
 import ingsis.runner.runner.service.common.ParserService
@@ -81,30 +81,25 @@ class RunnerService(
         return response.body ?: emptyList()
     }
 
-    fun validateOrFormatSnippets(snippetsValidationMessage: SnippetsValidationMessage) {
-        logger.info("Consuming the message to validate or format snippets for rule type: ${snippetsValidationMessage.ruleType}")
-        val snippets = snippetsValidationMessage.snippets
-        logger.info("Snippets are: $snippets")
-        val ruleType = snippetsValidationMessage.ruleType
+    fun validateOrFormatSnippet(snippetToValidate: SnippetToValidate) {
+        logger.info("Consuming the message to validate or format snippet for rule type: ${snippetToValidate.ruleType}")
+        logger.info("Snippet: $snippetToValidate")
+        val ruleType = snippetToValidate.ruleType
 
         if (ruleType == RuleTypeEnum.FORMAT.name) {
-            snippets.forEach { snippet ->
-                formatSnippet(
-                    content = snippet.content,
-                    version = snippet.language,
-                    userId = snippet.authorId,
-                    authorizationHeader = snippetsValidationMessage.authorizationHeader,
-                )
-            }
-            return
-        }
-        snippets.forEach { snippet ->
+            formatSnippet(
+                content = snippetToValidate.content,
+                version = snippetToValidate.language,
+                userId = snippetToValidate.authorId,
+                authorizationHeader = snippetToValidate.authorizationHeader,
+            )
+        } else {
             lintSnippet(
-                name = snippet.name,
-                content = snippet.content,
-                version = snippet.language,
-                userId = snippet.authorId,
-                authorizationHeader = snippetsValidationMessage.authorizationHeader,
+                name = snippetToValidate.name,
+                content = snippetToValidate.content,
+                version = snippetToValidate.language,
+                userId = snippetToValidate.authorId,
+                authorizationHeader = snippetToValidate.authorizationHeader,
             )
         }
     }
