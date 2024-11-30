@@ -1,7 +1,10 @@
 package ingsis.runner.runner.redis.consumer
 
-import ingsis.runner.runner.redis.model.SnippetsValidationMessage
+import com.fasterxml.jackson.databind.ObjectMapper
+import ingsis.runner.runner.redis.model.SnippetToValidate
 import ingsis.runner.runner.service.RunnerService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.connection.stream.ObjectRecord
@@ -17,18 +20,30 @@ class SnippetsToValidateListener(
     @Value("\${groups.rules}") groupId: String,
     redisTemplate: RedisTemplate<String, String>,
     private val runnerService: RunnerService,
-) : RedisStreamConsumer<SnippetsValidationMessage>(streamKey, groupId, redisTemplate) {
-    override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, SnippetsValidationMessage>> =
+) : RedisStreamConsumer<String>(streamKey, groupId, redisTemplate) {
+    private val logger: Logger = LoggerFactory.getLogger(SnippetsToValidateListener::class.java)
+
+    override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>> =
         StreamReceiver.StreamReceiverOptions
             .builder()
             .pollTimeout(Duration.ofMillis(10000))
-            .targetType(SnippetsValidationMessage::class.java)
+            .targetType(String::class.java)
             .build()
 
-    override fun onMessage(record: ObjectRecord<String, SnippetsValidationMessage>) {
-        val validationMessage = record.value
-        println("Received validation message: ${validationMessage.ruleType} with ${validationMessage.snippets.size} snippets")
-        // Process the snippets to validate them
-        runnerService.validateOrFormatSnippets(validationMessage)
+    override fun onMessage(record: ObjectRecord<String, String>) {
+        val snippetJson = record.value
+        logger.info("Received snippet validation message from Redis stream: $snippetJson")
+
+        try {
+            // Deserialize the Snippet
+            val snippet = ObjectMapper().readValue(snippetJson, SnippetToValidate::class.java)
+            logger.info("Deserialized snippet: $snippet")
+
+            // Call the runner service to validate the snippet
+            runnerService.validateOrFormatSnippet(snippet)
+            logger.info("Snippet processed successfully: ${snippet.id}")
+        } catch (ex: Exception) {
+            logger.error("Failed to process message: ${record.value}", ex)
+        }
     }
 }

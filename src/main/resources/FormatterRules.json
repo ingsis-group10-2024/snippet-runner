@@ -2,5 +2,5 @@
   "spaceBeforeColon": 1,
   "spaceAfterColon": 1,
   "spaceBeforeAndAfterAssignationOperator": 2,
-  "newlinesBeforePrintln": 1
+  "newlinesBeforePrintln": 3
 }

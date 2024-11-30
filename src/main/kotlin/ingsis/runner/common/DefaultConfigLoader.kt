@@ -5,9 +5,12 @@ import config.ConfigLoader
 import config.ConfigRule
 import config.VerificationConfig
 import ingsis.runner.runner.model.dto.RuleDTO
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class DefaultConfigLoader : ConfigLoader {
     private val objectMapper = jacksonObjectMapper()
+    private val logger: Logger = LoggerFactory.getLogger(DefaultConfigLoader::class.java)
 
     override fun loadConfig(): VerificationConfig {
         val configFilePath = "StaticCodeAnalyzerRules.json"
@@ -30,10 +33,13 @@ class DefaultConfigLoader : ConfigLoader {
     }
 
     // Method to map a list of RuleDto to a list of ConfigRule
-    private fun mapToConfigRule(ruleDto: RuleDTO): ConfigRule =
-        ConfigRule(
+    private fun mapToConfigRule(ruleDto: RuleDTO): ConfigRule {
+        val valueInt = ruleDto.value?.toIntOrNull() ?: 0
+        logger.info("Rule name: ${ruleDto.name}, value: ${ruleDto.value}, converted to: $valueInt")
+        return ConfigRule(
             name = ruleDto.name,
             enabled = ruleDto.isActive,
-            value = ruleDto.value?.toIntOrNull() ?: 0, // Convert value to Int or 0 if null
+            value = valueInt,
         )
+    }
 }

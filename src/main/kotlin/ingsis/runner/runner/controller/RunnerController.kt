@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
@@ -34,6 +35,7 @@ class RunnerController(
     fun lintSnippet(
         @RequestBody snippetRequest: SnippetRequest,
         principal: Principal,
+        @RequestHeader("Authorization") authorizationHeader: String,
     ): ResponseEntity<ValidationResponse> {
         println("Linting snippet...")
         println(
@@ -45,6 +47,7 @@ class RunnerController(
                 content = snippetRequest.content,
                 version = snippetRequest.languageVersion,
                 userId = principal.name,
+                authorizationHeader = authorizationHeader,
             )
         return ResponseEntity.ok(lintResult)
     }
@@ -53,10 +56,18 @@ class RunnerController(
     fun formatSnippet(
         @RequestBody formatRequest: FormatRequest,
         principal: Principal,
+        @RequestHeader("Authorization") authorizationHeader: String,
     ): ResponseEntity<FormatResponse> {
         val content = formatRequest.content
         val formatResult =
-            formatRequest.languageVersion?.let { runnerService.formatSnippet(content = content, version = it, userId = principal.name) }
+            formatRequest.languageVersion?.let {
+                runnerService.formatSnippet(
+                    content = content,
+                    version = it,
+                    userId = principal.name,
+                    authorizationHeader = authorizationHeader,
+                )
+            }
         return ResponseEntity.ok(formatResult)
     }
 }

@@ -1,81 +1,59 @@
 package ingsis.runner.runner.service.common
 
 import ast.ASTNode
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import config.CustomizableFormatterRules
-import config.VerificationConfig
+import com.nimbusds.jose.shaded.gson.Gson
+import com.nimbusds.jose.shaded.gson.JsonObject
 import implementation.Formatter
-import ingsis.runner.common.DefaultConfigLoader
 import ingsis.runner.runner.model.dto.RuleDTO
 import ingsis.runner.runner.model.dto.format.FormatResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.io.File
-import java.io.InputStream
 import java.nio.file.Files
-import java.nio.file.StandardOpenOption
 
 @Service
 class FormatService {
-    private val configLoader = DefaultConfigLoader()
+    private val logger: Logger = LoggerFactory.getLogger(FormatService::class.java)
 
     fun format(
         astNodes: List<ASTNode>,
         rules: List<RuleDTO>,
     ): FormatResponse {
-        // Check for custom rule. If they exist then create a temporary file with them
-        val configFilePath =
-            if (rules.isNotEmpty()) {
-                val verificationConfig = configLoader.loadConfigWithRules(rules)
-                val tempFile = createTempConfigFile(verificationConfig)
-                tempFile.toString()
-            } else {
-                // Load the default formatter rules from resources
-                val inputStream: InputStream =
-                    this::class.java.classLoader
-                        .getResourceAsStream("FormatterRules.json")
-                        ?: throw Exception("FormatterRules.json file not found in resources.")
-
-                // If necessary, save the inputStream content to a temporary file
-                val tempFile = Files.createTempFile("formatterRules", ".json").toFile()
-                inputStream.copyTo(tempFile.outputStream())
-                tempFile.toString() // Return the temporary file path
-            }
-
-        // Create the formatter
+        logger.info("Formatting code with rules: $rules")
+        val configFilePath = createTempConfigFile(rules)
         val formatter = Formatter(configFilePath)
-
-        return FormatResponse(formatter.format(astNodes))
+        val formattedCode = formatter.format(astNodes)
+        logger.info("Code formatted successfully.")
+        return FormatResponse(formattedCode)
     }
 
-    // Method to create a temporary file with the custom rules
-    private fun createTempConfigFile(config: VerificationConfig): File {
-        val tempFile = Files.createTempFile("formatterConfig", ".json").toFile()
+    private fun createTempConfigFile(rules: List<RuleDTO>): String {
+        val tempFile = Files.createTempFile("FormatterRules", ".json").toFile()
+        val jsonContent = buildJsonContent(rules)
+        logger.info("Creating temporary config file with content: $jsonContent")
+        tempFile.writeText(jsonContent)
+        // Delete file on exit
+        tempFile.deleteOnExit()
+        return tempFile.absolutePath
+    }
 
-        // Convert the custom rules to JSON format
-        val objectMapper = jacksonObjectMapper()
-        val customFormatterRules =
-            CustomizableFormatterRules(
-                spaceBeforeColon = config.activeRules.find { it.name == "spaceBeforeColon" }?.value ?: 1,
-                spaceAfterColon = config.activeRules.find { it.name == "spaceAfterColon" }?.value ?: 1,
-                spaceBeforeAndAfterAssignationOperator =
-                    config.activeRules.find { it.name == "spaceBeforeAndAfterAssignationOperator" }?.value ?: 1,
-                newlinesBeforePrintln = config.activeRules.find { it.name == "newlinesBeforePrintln" }?.value ?: 1,
-            )
+    private fun buildJsonContent(rules: List<RuleDTO>): String {
+        val jsonObject = JsonObject()
 
-        // Map the custom rules to a JSON string
-        val jsonConfig =
-            objectMapper.writeValueAsString(
-                mapOf(
-                    "newlinesAfterSemicolon" to 1, // default value
-                    "spacesBetweenTokens" to 1, // default value
-                    "spacesBeforeAndAfterOperators" to 1, // default value
-                    "custom" to customFormatterRules,
-                ),
-            )
+        // Default values
+        val spaceBeforeColon = rules.find { it.name == "spaceBeforeColon" && it.isActive }?.value?.toInt() ?: 1
+        val spaceAfterColon = rules.find { it.name == "spaceAfterColon" && it.isActive }?.value?.toInt() ?: 1
+        val spaceBeforeAndAfterAssignationOperator =
+            rules.find { it.name == "spaceBeforeAndAfterAssignationOperator" && it.isActive }?.value?.toInt() ?: 2
+        val newlinesBeforePrintln = rules.find { it.name == "newlinesBeforePrintln" && it.isActive }?.value?.toInt() ?: 3
 
-        // Write the JSON string to the temporary file
-        Files.write(tempFile.toPath(), jsonConfig.toByteArray(), StandardOpenOption.WRITE)
+        // Add values to JSON object
+        jsonObject.addProperty("spaceBeforeColon", spaceBeforeColon)
+        jsonObject.addProperty("spaceAfterColon", spaceAfterColon)
+        jsonObject.addProperty("spaceBeforeAndAfterAssignationOperator", spaceBeforeAndAfterAssignationOperator)
+        jsonObject.addProperty("newlinesBeforePrintln", newlinesBeforePrintln)
 
-        return tempFile
+        // Convert JSON object to string
+        return Gson().toJson(jsonObject)
     }
 }
