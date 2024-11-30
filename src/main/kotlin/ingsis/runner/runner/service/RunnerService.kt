@@ -89,7 +89,7 @@ class RunnerService(
         if (ruleType == RuleTypeEnum.FORMAT.name) {
             formatSnippet(
                 content = snippetToValidate.content,
-                version = snippetToValidate.language,
+                version = snippetToValidate.languageVersion,
                 userId = snippetToValidate.authorId,
                 authorizationHeader = snippetToValidate.authorizationHeader,
             )
@@ -97,7 +97,7 @@ class RunnerService(
             lintSnippet(
                 name = snippetToValidate.name,
                 content = snippetToValidate.content,
-                version = snippetToValidate.language,
+                version = snippetToValidate.languageVersion,
                 userId = snippetToValidate.authorId,
                 authorizationHeader = snippetToValidate.authorizationHeader,
             )

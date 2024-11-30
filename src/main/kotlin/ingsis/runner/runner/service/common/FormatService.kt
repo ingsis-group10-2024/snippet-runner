@@ -13,10 +13,12 @@ import java.nio.file.Files
 
 @Service
 class FormatService {
-
     private val logger: Logger = LoggerFactory.getLogger(FormatService::class.java)
 
-    fun format(astNodes: List<ASTNode>, rules: List<RuleDTO>): FormatResponse {
+    fun format(
+        astNodes: List<ASTNode>,
+        rules: List<RuleDTO>,
+    ): FormatResponse {
         logger.info("Formatting code with rules: $rules")
         val configFilePath = createTempConfigFile(rules)
         val formatter = Formatter(configFilePath)
@@ -24,6 +26,7 @@ class FormatService {
         logger.info("Code formatted successfully.")
         return FormatResponse(formattedCode)
     }
+
     private fun createTempConfigFile(rules: List<RuleDTO>): String {
         val tempFile = Files.createTempFile("FormatterRules", ".json").toFile()
         val jsonContent = buildJsonContent(rules)
@@ -33,13 +36,15 @@ class FormatService {
         tempFile.deleteOnExit()
         return tempFile.absolutePath
     }
+
     private fun buildJsonContent(rules: List<RuleDTO>): String {
         val jsonObject = JsonObject()
 
         // Default values
         val spaceBeforeColon = rules.find { it.name == "spaceBeforeColon" && it.isActive }?.value?.toInt() ?: 1
         val spaceAfterColon = rules.find { it.name == "spaceAfterColon" && it.isActive }?.value?.toInt() ?: 1
-        val spaceBeforeAndAfterAssignationOperator = rules.find { it.name == "spaceBeforeAndAfterAssignationOperator" && it.isActive }?.value?.toInt() ?: 2
+        val spaceBeforeAndAfterAssignationOperator =
+            rules.find { it.name == "spaceBeforeAndAfterAssignationOperator" && it.isActive }?.value?.toInt() ?: 2
         val newlinesBeforePrintln = rules.find { it.name == "newlinesBeforePrintln" && it.isActive }?.value?.toInt() ?: 3
 
         // Add values to JSON object
@@ -51,5 +56,4 @@ class FormatService {
         // Convert JSON object to string
         return Gson().toJson(jsonObject)
     }
-
 }
