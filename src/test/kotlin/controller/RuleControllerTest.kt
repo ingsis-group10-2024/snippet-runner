@@ -1,6 +1,5 @@
 package controller
 
-import ingsis.runner.runner.controller.RuleController
 import ingsis.runner.runner.model.dto.RuleDTO
 import ingsis.runner.runner.model.enums.RuleTypeEnum
 import ingsis.runner.runner.service.RuleService
