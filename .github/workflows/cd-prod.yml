@@ -1,4 +1,4 @@
-name: "CD - Main ツ"
+name: "CD - Runner - Prod ツ"
 
 on:
   push:
@@ -37,3 +37,24 @@ jobs:
             AUTH_SERVER_URI=${{ secrets.AUTH_SERVER_URI }}
             AUTH_CLIENT_ID=${{ secrets.AUTH_CLIENT_ID }}
             AUTH_CLIENT_SECRET=${{ secrets.AUTH_CLIENT_SECRET }}
+
+  deploy:
+    name: Runner deployment
+    runs-on: ubuntu-latest
+    needs: build-and-publish
+
+    steps:
+      - name: Update and Restart Runner Infrastructure
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_URL }}
+          username: "mcchicken"
+          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          script: |
+            cd snippet-infra 
+            sudo su
+            docker container stop snippet-runner  
+            docker container rm snippet-runner  
+            docker-compose -f docker-compose.prod.yml pull runner  
+            docker-compose -f docker-compose.prod.yml up -d runner  
+            docker image prune -f
