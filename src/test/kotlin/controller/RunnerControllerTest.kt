@@ -33,8 +33,6 @@ class RunnerControllerTest {
 
     private val authHeader = "Bearer token"
 
-
-
     @Test
     fun `execute snippet with empty content`() {
         val executeRequest = ExecuteRequest("", "3.9")
@@ -52,7 +50,7 @@ class RunnerControllerTest {
         whenever(principal.name).thenReturn("testUser")
         val snippetRequest = SnippetRequest("test", "code", "python", "invalid_version")
         val expectedResponse = ValidationResponse("test", false, "code", listOf(StaticCodeAnalyzerError("Error: Invalid language version")))
-        whenever(runnerService.lintSnippet("test", "code", "invalid_version", "testUser" , authHeader)).thenReturn(expectedResponse)
+        whenever(runnerService.lintSnippet("test", "code", "invalid_version", "testUser", authHeader)).thenReturn(expectedResponse)
 
         val response = runnerController.lintSnippet(snippetRequest, principal, authHeader)
 
