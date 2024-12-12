@@ -121,4 +121,10 @@ jacocoTestReport {
         html.required = true
         csv.required = false
     }
+    classDirectories.setFrom(
+            fileTree(dir: "${buildDir}/classes/kotlin/main" , exclude:[
+                    '**/ingsis/runner/runner/redis/**',
+                    '**/ingsis/runner/security/**'
+            ])
+    )
 }
